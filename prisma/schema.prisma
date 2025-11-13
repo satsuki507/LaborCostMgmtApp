@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int     @id @default(autoincrement())
+  email         String  @unique
+  password      String
+  name          String
+  role          String
+  employeeId    Int     @unique
+  timesheetEntries TimesheetEntry[]
+}
+
+model Project {
+  id            Int     @id @default(autoincrement())
+  name          String
+  projectCode   String  @unique
+  isBillable    Boolean
+  timesheetEntries TimesheetEntry[]
+}
+
+model TaskProcess {
+  id            Int     @id @default(autoincrement())
+  processCode   String  @unique
+  processName   String
+  timesheetEntries TimesheetEntry[]
+}
+
+model WorkLocation {
+  id            Int     @id @default(autoincrement())
+  locationCode  String  @unique
+  locationName  String
+  startTime     DateTime
+  endTime       DateTime
+  timeInterval  Int
+  timesheetEntries TimesheetEntry[]
+}
+
+model TimesheetEntry {
+  id               Int     @id @default(autoincrement())
+  employeeId       Int
+  projectCode      String
+  processCode      String
+  locationCode     String
+  startTime        DateTime
+  endTime          DateTime
+  taskDescription  String?
+
+  user             User           @relation(fields: [employeeId], references: [employeeId])
+  project          Project        @relation(fields: [projectCode], references: [projectCode])
+  taskProcess      TaskProcess    @relation(fields: [processCode], references: [processCode])
+  workLocation     WorkLocation   @relation(fields: [locationCode], references: [locationCode])
+}
