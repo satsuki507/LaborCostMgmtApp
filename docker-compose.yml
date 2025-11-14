@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+    db:
+        image: postgres:15
+        container_name: labor_cost_mgmt_app_db
+        restart: always
+        volumes:
+            - labor_cost_mgmt_app_db:/var/lib/postgresql/data # データ永続化のため
+        ports:
+            - "5432:5432" # ホストPCの5432ポートに公開
+        environment:
+            - POSTGRES_USER=${POSTGRES_USER} # 任意のユーザー名
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # 任意のパスワード
+            - POSTGRES_DB=${POSTGRES_DB} # データベース名
+
+volumes:
+    labor_cost_mgmt_app_db:
